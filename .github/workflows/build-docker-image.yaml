@@ -5,5 +5,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: "GH_ENTERPRISE_TOKEN=${{ secrets.GITHUB_TOKEN }} docker build --tag docker-actions-example:latest --file build/package/Dockerfile ."
-      - run: "docker run --rm docker-actions-example:latest hello world"
+      - run: "GH_ENTERPRISE_TOKEN=${{ secrets.GITHUB_TOKEN }} GH_TOKEN=${{ secrets.GITHUB_TOKEN }} docker build --tag docker-actions-example:latest --file build/package/Dockerfile ."
+      - run: "docker run --rm --env GITHUB_TOKEN docker-actions-example:latest hello world"
