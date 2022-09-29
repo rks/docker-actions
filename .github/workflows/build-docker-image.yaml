@@ -5,12 +5,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: "docker build --build-arg BASE_IMAGE_REGISTRY=docker.io --no-cache --progress plain --tag docker-actions-example:latest --file build/package/Dockerfile --secret id=SAMPLE --secret id=GITHUB_TOKEN ."
+      - run: "docker build --build-arg BASE_IMAGE_REGISTRY=docker.io --no-cache --progress plain --tag docker-actions-example:latest --file build/package/Dockerfile --secret id=GH_TOKEN ."
         env:
           DOCKER_BUILDKIT: 1
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SAMPLE: sample
-      - run: "docker run --rm --env SAMPLE --env GITHUB_TOKEN docker-actions-example:latest hello world"
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: "docker run --rm --env SAMPLE --env GH_TOKEN docker-actions-example:latest hello world"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SAMPLE: sample
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

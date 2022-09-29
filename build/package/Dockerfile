@@ -18,6 +18,6 @@ COPY build/package/github-auth-entrypoint.sh /docker/github-auth-entrypoint.sh
 
 RUN env | sort
 
-RUN --mount=type=secret,id=GITHUB_TOKEN /docker/github-auth-entrypoint.sh git clone https://github.com/rks/readme-readme-readme
+RUN --mount=type=secret,id=GH_TOKEN /docker/github-auth-entrypoint.sh git clone https://github.com/rks/readme-readme-readme
 
 ENTRYPOINT [ "/entrypoint.sh" ]
