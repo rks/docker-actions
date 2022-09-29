@@ -1,23 +1,23 @@
 # syntax=docker/dockerfile:1
 
-FROM debian:11.5-slim
+ARG BASE_IMAGE_REGISTRY=mw-docker.repositories.mathworks.com
+ARG BASE_IMAGE_NAME=golang
+ARG BASE_IMAGE_TAG=1.19
 
-COPY build/package/entrypoint.sh /entrypoint.sh
+FROM ${BASE_IMAGE_REGISTRY}/${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG} AS base
 
-RUN env | sort
-
-RUN --mount=type=secret,id=GITHUB_TOKEN echo "GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN)"
-RUN --mount=type=secret,id=SAMPLE echo "SAMPLE=$(cat /run/secrets/SAMPLE)"
-
-RUN apt-get update; \
-    apt-get upgrade --assume-yes; \
-    apt-get install --assume-yes curl git
-
+# Update system and install the `gh` command line tool
 RUN curl https://cli.github.com/packages/githubcli-archive-keyring.gpg --silent --location --output /usr/share/keyrings/githubcli-archive-keyring.gpg; \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > /etc/apt/sources.list.d/github-cli.list; \
     apt-get update; \
+    apt-get upgrade --assume-yes; \
     apt-get install --assume-yes gh
 
-RUN git clone https://github.com/rks/readme-readme-readme
+COPY build/package/entrypoint.sh /entrypoint.sh
+COPY build/package/github-auth-entrypoint.sh /usr/local/bin/github-auth-entrypoint
+
+RUN env | sort
+
+RUN --mount=type=secret,id=GITHUB_TOKEN github-auth-entrypoint git clone https://github.com/rks/readme-readme-readme
 
 ENTRYPOINT [ "/entrypoint.sh" ]
