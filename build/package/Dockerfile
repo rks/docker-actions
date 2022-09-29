@@ -1,9 +1,12 @@
+#syntax=docker/dockerfile:1
+
 FROM debian:11.5-slim
 
 COPY build/package/entrypoint.sh /entrypoint.sh
 
-RUN echo "GH_ENTERPRISE_TOKEN=${GH_ENTERPRISE_TOKEN}"
-RUN echo "GITHUB_TOKEN=${GITHUB_TOKEN}"
+RUN env | sort
 
+RUN --mount=type=secret,id=GITHUB_TOKEN echo "GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN)"
+RUN --mount=type=secret,id=SAMPLE echo "SAMPLE=$(cat /run/secrets/SAMPLE)"
 
 ENTRYPOINT [ "/entrypoint.sh" ]

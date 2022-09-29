@@ -2,5 +2,7 @@
 
 echo "Running with args: ${@}"
 
-echo "GH_ENTERPRISE_TOKEN=${GH_ENTERPRISE_TOKEN}"
+env | sort
+
 echo "GITHUB_TOKEN=${GITHUB_TOKEN}"
+echo "SAMPLE=${SAMPLE}"
