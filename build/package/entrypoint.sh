@@ -1,5 +1,6 @@
 #!/bin/sh -l
 
-echo "Hello $1"
+echo "Running with args: ${@}"
 
-echo "$(env | sort)"
+echo "GITHUB_TOKEN=${GITHUB_TOKEN}"
+echo "GH_ENTERPRISE_TOKEN=${GH_ENTERPRISE_TOKEN}"
