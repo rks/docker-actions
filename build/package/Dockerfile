@@ -13,11 +13,11 @@ RUN curl https://cli.github.com/packages/githubcli-archive-keyring.gpg --silent 
     apt-get upgrade --assume-yes; \
     apt-get install --assume-yes gh
 
-COPY build/package/entrypoint.sh /entrypoint.sh
-COPY build/package/github-auth-entrypoint.sh /usr/local/bin/github-auth-entrypoint
+COPY build/package/entrypoint.sh /docker/entrypoint.sh
+COPY build/package/github-auth-entrypoint.sh /docker/github-auth-entrypoint.sh
 
 RUN env | sort
 
-RUN --mount=type=secret,id=GITHUB_TOKEN github-auth-entrypoint git clone https://github.com/rks/readme-readme-readme
+RUN --mount=type=secret,id=GITHUB_TOKEN /docker/github-auth-entrypoint.sh git clone https://github.com/rks/readme-readme-readme
 
 ENTRYPOINT [ "/entrypoint.sh" ]
