@@ -13,5 +13,6 @@ jobs:
              echo "${{ secrets.SSH_PRIVATE_KEY }}" > $HOME/.ssh/id_ed25519
              chmod 600 $HOME/.ssh/id_ed25519
              eval $(ssh-agent -a $SSH_AUTH_SOCK) > /dev/null
+             env | sort
         env:
           SSH_AUTH_SOCK: /tmp/ssh-agent.sock
