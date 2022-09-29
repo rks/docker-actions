@@ -5,10 +5,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: "docker build --build-arg BASE_IMAGE_REGISTRY=docker.io --no-cache --progress plain --tag docker-actions-example:latest --file build/package/Dockerfile --secret id=GH_TOKEN ."
-        env:
-          DOCKER_BUILDKIT: 1
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: "docker run --rm --env SAMPLE --env GH_TOKEN docker-actions-example:latest hello world"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+             mkdir --parents $HOME/.ssh
+             ssh-keyscan github.com >> $HOME/.ssh/known_hosts
+             echo "${{ secrets.GITHUB_SECRET_KEY }}" > $HOME/.ssh/id_ed25519
+             chmod 600 $HOME/.ssh/id_ed25519
+             ssh-agent /tmp/ssh-agent.sock > /dev/null
+             ssh-add
+      # - run: "docker build --build-arg BASE_IMAGE_REGISTRY=docker.io --no-cache --progress plain --tag docker-actions-example:latest --file build/package/Dockerfile --secret id=GH_TOKEN ."
+      #   env:
+      #     DOCKER_BUILDKIT: 1
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - run: "docker run --rm --env SAMPLE --env GH_TOKEN docker-actions-example:latest hello world"
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
