@@ -7,6 +7,7 @@ jobs:
       - uses: actions/checkout@v3
       - run: "docker build --no-cache --progress plain --tag docker-actions-example:latest --file build/package/Dockerfile --secret id=SAMPLE --secret id=GITHUB_TOKEN ."
         env:
+          DOCKER_BUILDKIT: 1
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SAMPLE: sample
       - run: "docker run --rm --env SAMPLE --env GITHUB_TOKEN docker-actions-example:latest hello world"
