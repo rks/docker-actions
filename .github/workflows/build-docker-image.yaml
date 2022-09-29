@@ -8,11 +8,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-             mkdir --parents $HOME/.ssh
-             ssh-keyscan github.com >> $HOME/.ssh/known_hosts 2> /dev/null
+             mkdir --parents --mode 0700 $HOME/.ssh
              echo "${{ secrets.SSH_PRIVATE_KEY }}" > $HOME/.ssh/id_ed25519
-             chmod 600 $HOME/.ssh/id_ed25519
+             ssh-keyscan github.com >> $HOME/.ssh/known_hosts 2> /dev/null
+             chmod 0400 $HOME/.ssh/id_ed25519
+             chmod 0400 $HOME/.ssh/known_hosts
              eval $(ssh-agent -a $SSH_AUTH_SOCK) > /dev/null
-             env | sort
+             ssh-add
         env:
           SSH_AUTH_SOCK: /tmp/ssh-agent.sock
