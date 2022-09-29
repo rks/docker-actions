@@ -1,5 +1,7 @@
 name: build-docker-image
-on : [push]
+on:
+  push:
+    branches: [main]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -10,7 +12,7 @@ jobs:
              ssh-keyscan github.com >> $HOME/.ssh/known_hosts
              echo "${{ secrets.GITHUB_SECRET_KEY }}" > $HOME/.ssh/id_ed25519
              chmod 600 $HOME/.ssh/id_ed25519
-             ssh-agent /tmp/ssh-agent.sock > /dev/null
+             ssh-agent -a /tmp/ssh-agent.sock > /dev/null
              ssh-add
       # - run: "docker build --build-arg BASE_IMAGE_REGISTRY=docker.io --no-cache --progress plain --tag docker-actions-example:latest --file build/package/Dockerfile --secret id=GH_TOKEN ."
       #   env:
