@@ -10,7 +10,7 @@ jobs:
       - run: |
              mkdir --parents $HOME/.ssh
              ssh-keyscan github.com >> $HOME/.ssh/known_hosts
-             echo "${{ secrets.GITHUB_SECRET_KEY }}" > $HOME/.ssh/id_ed25519
+             echo "${{ secrets.SSH_PRIVATE_KEY }}" > $HOME/.ssh/id_ed25519
              chmod 600 $HOME/.ssh/id_ed25519
              ssh-agent -a /tmp/ssh-agent.sock > /dev/null
              ssh-add
