@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+set -e
+
+SSH_AUTH_SOCK="${SSH_AUTH_SOCK:-/tmp/ssh-agent.sock}"
+
+# If the SSH agent is not running, start it.
+if [[ ! -S "${SSH_AUTH_SOCK}" ]]; then
+    echo "Starting SSH agent"
+
+    eval $(ssh-agent -a $SSH_AUTH_SOCK -t 10m) > /dev/null
+
+    __sshAgentStarted=1
+fi
+
+GH_SSH_KEY_FILE="${GH_SSH_KEY_FILE:-$HOME/.ssh/id_ed25519}"
+GH_SSH_KEY="${GH_SSH_KEY:-$(cat $GH_SSH_KEY_FILE)}"
+
+# If we have an SSH key, add it to the agent.
+[[ -n "${GH_SSH_KEY}" ]] && echo "${GH_SSH_KEY}" | ssh-add -q -
+
+IMAGE_REGISTRY=mw-docker.repositories.mathworks.com
+IMAGE_NAME=go-docker-base
+IMAGE_TAG=latest
+
+docker build \
+    --ssh default \
+    --file build/package/Dockerfile \
+    --build-arg BASE_IMAGE_REGISTRY=docker.io \
+    --tag "${IMAGE_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}" \
+    --no-cache \
+    --progress plain \
+    .
+
+# If the SSH agent is running, and we started it, stop it.
+if [[ -S "${SSH_AUTH_SOCK}" ]] && [[ $__sshAgentStarted == 1 ]]; then
+    echo "Starting SSH agent"
+
+    eval $(ssh-agent -k -a $SSH_AUTH_SOCK) > /dev/null
+fi

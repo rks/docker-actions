@@ -6,18 +6,16 @@ ARG BASE_IMAGE_TAG=1.19
 
 FROM ${BASE_IMAGE_REGISTRY}/${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG} AS base
 
-# Update system and install the `gh` command line tool
-RUN curl https://cli.github.com/packages/githubcli-archive-keyring.gpg --silent --location --output /usr/share/keyrings/githubcli-archive-keyring.gpg; \
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > /etc/apt/sources.list.d/github-cli.list; \
-    apt-get update; \
+ARG WORKDIR=/mw
+
+WORKDIR ${WORKDIR}
+
+COPY build/package/known_hosts /docker/known_hosts
+
+RUN apt-get update; \
     apt-get upgrade --assume-yes; \
-    apt-get install --assume-yes gh
+    mkdir --parents --mode 0700 $HOME/.ssh; \
+    mv /docker/known_hosts $HOME/.ssh/known_hosts; \
+    chmod 0400 $HOME/.ssh/known_hosts
 
-COPY build/package/entrypoint.sh /docker/entrypoint.sh
-COPY build/package/github-auth-entrypoint.sh /docker/github-auth-entrypoint.sh
-
-RUN env | sort
-
-RUN --mount=type=secret,id=GH_TOKEN /docker/github-auth-entrypoint.sh git clone https://github.com/rks/readme-readme-readme
-
-ENTRYPOINT [ "/entrypoint.sh" ]
+RUN --mount=type=ssh git clone git@github.com:rks/readme-readme-readme.git .
