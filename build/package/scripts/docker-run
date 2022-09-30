@@ -23,14 +23,16 @@ IMAGE_REGISTRY=mw-docker.repositories.mathworks.com
 IMAGE_NAME=go-docker-base
 IMAGE_TAG=latest
 
-docker build \
-    --ssh default \
-    --file build/package/Dockerfile \
-    --build-arg BASE_IMAGE_REGISTRY=docker.io \
-    --tag "${IMAGE_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}" \
-    --no-cache \
-    --progress plain \
-    .
+# For Docker engines that use a VM (macOS, Windows).
+# Could make an architecture check here.
+SSH_AUTH_SOCK_MOUNT="${SSH_AUTH_SOCK_MOUNT:-$SSH_AUTH_SOCK}"
+
+docker run \
+    --rm \
+    --volume "${SSH_AUTH_SOCK_MOUNT}":/tmp/ssh-auth.sock \
+    --env SSH_AUTH_SOCK=/tmp/ssh-auth.sock \
+    "${IMAGE_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}" \
+    "$@"
 
 # If the SSH agent is running, and we started it, stop it.
 if [[ -S "${SSH_AUTH_SOCK}" ]] && [[ $__sshAgentStarted == 1 ]]; then

@@ -11,3 +11,6 @@ jobs:
         env:
           DOCKER_BUILDKIT: 1
           GH_SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      - run: ./build/package/scripts/docker-run git clone git@github.com:rks/readme-readme-readme.git clone-run
+        env:
+          GH_SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}

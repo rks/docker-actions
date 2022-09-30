@@ -18,4 +18,4 @@ RUN apt-get update; \
     mv /docker/known_hosts $HOME/.ssh/known_hosts; \
     chmod 0400 $HOME/.ssh/known_hosts
 
-RUN --mount=type=ssh git clone git@github.com:rks/readme-readme-readme.git .
+RUN --mount=type=ssh git clone git@github.com:rks/readme-readme-readme.git clone-build
