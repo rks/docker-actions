@@ -10,18 +10,12 @@ IMAGE_TAG=latest
 
 __dockerImage="${IMAGE_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
 
-if [[ -n "${GH_SSH_KEY}" ]] || [[ -n "${GH_SSH_KEY_FILE}" ]]; then
-    echo "Running with SSH mount"
-
+if [[ -n "${SSH_AUTH_SOCK_MOUNT}" ]]; then
     __dockerSSHMountFlags="--volume \"${SSH_AUTH_SOCK_MOUNT}\":/tmp/ssh-auth.sock --env SSH_AUTH_SOCK=/tmp/ssh-auth.sock"
 
-    ./build/package/scripts/ssh-agent-entrypoint.sh \
-        "${__dockerCommand}" \
-        "${__dockerSSHMountFlags}" \
-        "${__dockerImage}" \
-        "${@}"
-else
-    echo "Running without SSH mount"
-
-    eval "${__dockerCommand} ${__dockerImage} ${@}"
+    __dockerCommand="${__dockerCommand} ${__dockerSSHMountFlags}"
 fi
+
+[[ "${DEBUG}" == "1" ]] && echo "[docker-run] Running ${@}"
+
+eval "${__dockerCommand} ${__dockerImage} ${@}"

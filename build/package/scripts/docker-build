@@ -19,8 +19,8 @@ __dockerContext='.'
 
 if [[ -n "${GH_SSH_KEY}" ]] || [[ -n "${GH_SSH_KEY_FILE}" ]]; then
     __dockerCommand="${__dockerCommand} --ssh default"
-
-    ./build/package/scripts/ssh-agent-entrypoint.sh "${__dockerCommand} ${__dockerContext}"
-else
-    eval "${__dockerCommand} ${__dockerContext}"
 fi
+
+[[ "${DEBUG}" == "1" ]] && echo "[docker-build] Running ${@}"
+
+eval "${__dockerCommand} ${__dockerContext}"
