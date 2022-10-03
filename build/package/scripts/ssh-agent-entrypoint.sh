@@ -23,6 +23,8 @@ GH_SSH_KEY="${GH_SSH_KEY:-$(cat ${GH_SSH_KEY_FILE})}"
 # Could make an architecture check here.
 SSH_AUTH_SOCK_MOUNT="${SSH_AUTH_SOCK_MOUNT:-${SSH_AUTH_SOCK}}"
 
+[[ "${DEBUG}" == "1" ]] && echo "Running ${@}"
+
 # Set a variable that eval-ed code can look for
 SSH_AGENT_ENTRYPOINT=on eval "${@}"
 
