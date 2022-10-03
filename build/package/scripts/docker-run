@@ -16,6 +16,6 @@ if [[ -n "${SSH_AUTH_SOCK_MOUNT}" ]]; then
     __dockerCommand="${__dockerCommand} ${__dockerSSHMountFlags}"
 fi
 
-[[ "${DEBUG}" == "1" ]] && echo "[docker-run] Running ${@}"
+[[ "${DEBUG}" == "1" ]] && echo "[docker-run] Running ${__dockerCommand} ${__dockerImage} ${@}"
 
 eval "${__dockerCommand} ${__dockerImage} ${@}"

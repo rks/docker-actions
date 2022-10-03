@@ -21,6 +21,6 @@ if [[ -n "${GH_SSH_KEY}" ]] || [[ -n "${GH_SSH_KEY_FILE}" ]]; then
     __dockerCommand="${__dockerCommand} --ssh default"
 fi
 
-[[ "${DEBUG}" == "1" ]] && echo "[docker-build] Running ${@}"
+[[ "${DEBUG}" == "1" ]] && echo "[docker-build] Running ${__dockerCommand} ${__dockerContext}"
 
 eval "${__dockerCommand} ${__dockerContext}"
